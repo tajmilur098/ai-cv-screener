@@ -1,0 +1,803 @@
+{
+  "name": "AI CV / Resume Screener",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -784,
+        -208
+      ],
+      "id": "199f042c-5be7-4ae7-9af4-e64c41dbd746",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "***",
+          "mode": "list",
+          "cachedResultName": "cv_test_data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/***/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 971155814,
+          "mode": "list",
+          "cachedResultName": "cv_test_data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/***/edit#gid=971155814"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('If').item.json.row_number }}",
+            "fit_score": "={{ $json.output.fit_score }}",
+            "verdict": "={{ $json.output.verdict }}",
+            "reason": "={{ $json.output.reason }}",
+            "strengths": "={{ $json.output.strengths }}",
+            "gaps": "={{ $json.output.gaps }}",
+            "red_flags": "={{ $json.output.red_flags }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "candidate_id",
+              "displayName": "candidate_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cv_text",
+              "displayName": "cv_text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "fit_score",
+              "displayName": "fit_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "verdict",
+              "displayName": "verdict",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "strengths",
+              "displayName": "strengths",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "gaps",
+              "displayName": "gaps",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "red_flags",
+              "displayName": "red_flags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        576,
+        0
+      ],
+      "id": "e8abbebf-8e3b-4151-918a-94097513ec5b",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "###",
+          "name": "Google Sheets account Taj"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        432,
+        0
+      ],
+      "id": "3669baa1-68da-4230-82cd-94dd877114f9",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d355a04e-30c1-427f-8a95-e5acef2fe791",
+              "leftValue": "={{ $json.fit_score }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "2e131e54-3f1f-44e2-b4ae-5c8f5d199a0d",
+              "leftValue": "={{ $json.candidate_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -240,
+        32
+      ],
+      "id": "d7cd3929-9f90-428f-8c53-4fd2f33e44f1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -448,
+        16
+      ],
+      "id": "9f30cd61-1fcf-46c1-9c38-e0ff4a4d0375",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "options": {
+          "prompt": "Instructions:\n--------------\n{instructions}\n--------------\nCompletion:\n--------------\n{completion}\n--------------\n\nAbove, the Completion did not satisfy the constraints given in the Instructions.\nError:\n--------------\n{error}\n--------------\n\nPlease try again. Please only respond with an answer that satisfies the constraints laid out in the Instructions:"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+      "typeVersion": 1,
+      "position": [
+        96,
+        -64
+      ],
+      "id": "605fe821-aa01-4a0d-a0cc-2be667a6861f",
+      "name": "Auto-fixing Output Parser"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"fit_score\": 82,\n  \"verdict\": \"Shortlist\",\n  \"reason\": \"Strong Node.js and PostgreSQL experience with production scale.\",\n  \"strengths\": \"Node.js, Express, PostgreSQL, Docker, testing\",\n  \"gaps\": \"No TypeScript mentioned\",\n  \"red_flags\": \"none\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        208,
+        64
+      ],
+      "id": "de90fd5c-59c5-4cfd-8b51-db6724126e7e",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        0
+      ],
+      "id": "8e3249ae-3d25-4ce9-af01-85238f2615ef",
+      "name": "Wait",
+      "webhookId": "b9785ea0-2c29-4dd2-8303-d8009188c2d7"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "***",
+          "mode": "list",
+          "cachedResultName": "cv_test_data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/***/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 971155814,
+          "mode": "list",
+          "cachedResultName": "cv_test_data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/***/edit#gid=971155814"
+        },
+        "filtersUI": {
+          "values": []
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -624,
+        16
+      ],
+      "id": "cc0ca449-b876-4781-876f-9811439b9af0",
+      "name": "Get row(s) in sheet",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "###",
+          "name": "Google Sheets account Taj"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        96,
+        80
+      ],
+      "id": "c9aa0483-e439-48da-aba6-b3aa90043301",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "90XaZh210W6vYhVt",
+          "name": "Groq account 41"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        16,
+        -64
+      ],
+      "id": "b759bfd5-cf04-4b0a-92ed-d61f9a4d4bec",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "90XaZh210W6vYhVt",
+          "name": "Groq account 41"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1ExJSVFBbvRPonobM0PqwkAya8SglyzKY",
+            "mode": "list",
+            "cachedResultName": "Cv Inbox",
+            "cachedResultUrl": "***"
+          },
+          "whatToSearch": "files"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -656,
+        -208
+      ],
+      "id": "86919740-cf35-4e48-86ac-3c9d1a6f59bc",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "rSRwluCY6tnG2Oja",
+          "name": "Google Drive account Taj"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -496,
+        -208
+      ],
+      "id": "9752b156-54ce-4cdb-9195-7c5809ef1235",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "rSRwluCY6tnG2Oja",
+          "name": "Google Drive account Taj"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -368,
+        -208
+      ],
+      "id": "deefb671-4576-42ca-99bf-be6524b503c9",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "***",
+          "mode": "list",
+          "cachedResultName": "cv_test_data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/***/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 971155814,
+          "mode": "list",
+          "cachedResultName": "cv_test_data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/***/edit#gid=971155814"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "cv_text": "={{ $json.text }}",
+            "candidate_id": "={{ $('Download file').item.json.id }}",
+            "file_name": "={{ $('Download file').item.json.name }}"
+          },
+          "matchingColumns": [
+            "candidate_id"
+          ],
+          "schema": [
+            {
+              "id": "candidate_id",
+              "displayName": "candidate_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "file_name",
+              "displayName": "file_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cv_text",
+              "displayName": "cv_text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fit_score",
+              "displayName": "fit_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "verdict",
+              "displayName": "verdict",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "strengths",
+              "displayName": "strengths",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "gaps",
+              "displayName": "gaps",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "red_flags",
+              "displayName": "red_flags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -224,
+        -208
+      ],
+      "id": "500983c8-76ab-4415-aae8-654852c35e9a",
+      "name": "Append or update row in sheet",
+      "executeOnce": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "###",
+          "name": "Google Sheets account Taj"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an experienced technical recruiter screening CVs for one specific role. Judge each candidate only against this job, fairly but with a real hiring bar.\n\nROLE: Junior Backend Developer (Node.js)\nMust-haves: Node.js + Express (or similar), a relational database (PostgreSQL/MySQL), REST API experience, Git.\nNice-to-haves: Docker, cloud (AWS/GCP), testing habits, TypeScript, 1–3 years experience.\nThis is a JUNIOR role: a strong motivated beginner is fine; a senior with 7+ years is likely overqualified and a flight/salary risk.\n\nScore on four weighted criteria:\n1. Must-have skills matched — 40%\n2. Years and depth of relevant experience — 30%\n3. Role-specific extras (nice-to-haves, domain, tools) — 20%\n4. Overall clarity and credibility of the CV — 10%\n\nUse the FULL 0–100 range. Do not cluster scores. A vague or red-flag CV should score low; a strong match should score high.\n\nHARD RULES (apply before scoring, they override skill strength):\n- If the candidate lacks the core required language/framework (here, Node.js) with no evidence of real use, the role is not a fit. Cap fit_score below 45 and set verdict \"Reject\", however strong their other skills are. Name the missing must-have in red_flags. A different stack (e.g. PHP, Java) with strong experience is still a Reject for this role.\n- If the candidate is clearly senior/overqualified for a junior role (roughly 6+ years, lead/architect responsibilities) but DOES have the required stack, do NOT reject on skill. Score 55–68, set verdict \"Maybe\", and in red_flags state \"overqualified — retention/salary risk\". Rejection here should be about fit, never about weakness.\n\nThresholds:\n- fit_score >= 75  -> \"Shortlist\"\n- fit_score 50–74  -> \"Maybe\"\n- fit_score < 50   -> \"Reject\"\n\nBefore giving fit_score, reason step by step INTERNALLY: score each of the four criteria separately (out of their weight), then sum. Do not reveal the steps — only output the final JSON. Two candidates should almost never get the same fit_score; use specific numbers like 73, 48, 91, not round numbers like 70, 50, 90.\n\nCalibration: a vague candidate missing most must-haves scores 20–40. A partial match (right stack, thin experience) scores 55–70. A clear strong match scores 80–95.\n\nReturn ONLY a valid JSON object in exactly this shape — no prose, no markdown:\n{\n  \"fit_score\": 0,\n  \"verdict\": \"Shortlist | Maybe | Reject\",\n  \"reason\": \"2–3 sentences, specific to this candidate and this role\",\n  \"strengths\": \"what matches the role\",\n  \"gaps\": \"what is missing or weak\",\n  \"red_flags\": \"job-hopping, unexplained gaps, missing must-haves, or 'none'\"\n}\n\n--- CANDIDATE ---\nName: {{ $json.file_name }}\nCV: {{ $json.cv_text }}",
+        "hasOutputParser": true,
+        "batching": {
+          "batchSize": 1,
+          "delayBetweenBatches": 15000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        32,
+        -208
+      ],
+      "id": "34459939-dfbd-4174-9bb2-df976247b53e",
+      "name": "Basic LLM Chain",
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "retryOnFail": false
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-fixing Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "2914f6b0-c0ca-4217-8191-ad0d1326e2e7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "your_instance_id"
+  },
+  "nodeGroups": [],
+  "id": "fTGeG3uOGsgS3ujC",
+  "tags": []
+}
